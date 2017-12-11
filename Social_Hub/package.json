@@ -1,0 +1,22 @@
+{
+  "name": "social_hub",
+  "version": "0.0.0",
+  "description": "Social_Hub",
+  "scripts": {
+    "start": "node server"
+  },
+  "engines": {
+    "node": "~6.10.x"
+  },
+  "author": {
+    "name": "unCry"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.2",
+    "express-handlebars": "^3.0.0",
+    "mongodb": "^2.2.33"
+  },
+  "devDependencies": {}
+}

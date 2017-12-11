@@ -1,0 +1,83 @@
+﻿<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            background-color: #00b0ff;
+        }
+
+        #head {
+            position: fixed;
+            top: 0%;
+            left: 0;
+            width: 95%;
+        }
+
+            #head > li {
+                display: inline;
+            }
+
+            #head a, #head label {
+                color: white !important;
+                margin-top: 15px;
+                margin-right: 15px;
+                font-size: 16px;
+            }
+
+        #content {
+            width: 100%;
+            position: relative;
+            top: 15%;
+            color: white;
+        }
+
+            #content label {
+                width: 160px;
+                font-size: 16px;
+                text-align: right;
+                margin-right: 10px;
+            }
+
+            #content input {
+                width: 180px;
+            }
+
+            #content label, #content input {
+                margin-top: 10px;
+            }
+
+        #bear-pic {
+        }
+    </style>
+</head>
+<body>
+    <form method="post">
+        <ul id="head">
+            <li><input style="float: right; width: 120px;margin-top: 12px; margin-right: 15px;" type="submit" value="Sign in" class="btn btn-primary"></li>
+            <li><label style="float: right;">Password: <input type="password" name="password" style="color: black;" tabindex="2"></label></li>
+            <li><label style="float: right;">Username: <input type="text" name="username" style="color: black;" tabindex="1"></label></li>
+        </ul>
+    </form>
+    <div class="container" id="content">
+        >
+        <div class="col-md-offset-1 col-md-4">
+            <h1>Don't have an Account? Register right here!</h1>
+            <form method="post" action="/account/register">
+                <label for="reg_username">Username: </label> <input type="text" id="reg_username" name="reg_username" maxlength="10" style="color: black;" required> <br>
+                <label for="reg_password">Password: </label> <input type="text" id="reg_password" name="reg_password" maxlength="10" style="color: black;" required> <br>
+                <label for="reg_password">Confirm Password: </label> <input type="text" id="reg_password" name="reg_password" maxlength="10" style="color: black;" disabled="true"> <br>
+                <label for="reg_email">Email: </label> <input type="text" id="reg_email" name="reg_email" style="color: black;" disabled="true"> <br>
+                <input type="submit" value="Register!" style="width: 120px; position: relative; left: 190px;" class="btn btn-primary" required>
+            </form>
+        </div>
+        <div class="col-md-7" id="bear-pic">
+            <!--- Bear Pic goes here --->
+            <img src="/bear.png">
+        </div>
+    </div>
+</body>
+</html>
