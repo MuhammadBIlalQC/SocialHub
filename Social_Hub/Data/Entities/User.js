@@ -1,5 +1,4 @@
 ﻿var Announcement = require('./Announcement');
-const database = require('../Database');
 
 class User {
     constructor(username, password, dontHashIt) {
@@ -38,13 +37,15 @@ class User {
         {
             this.friendReqests = [];
         }
-        //check to see if friend request sent by a friend
-        for (var i = 0; i < this.friends.length; i++)
+        //check to see if friend request was sent by a friend
+        if (this.friends != null)
         {
-            if (this.friends[i] == username)
-                return;
+            for (var i = 0; i < this.friends.length; i++) {
+                if (this.friends[i] == username)
+                    return;
+            }
         }
-
+        //check if friend request already exists
         for (var i = 0; i < this.friendReqests.length; i++)
         {
             if (this.friendReqests[i] == username)
@@ -65,6 +66,8 @@ class User {
             }
 
             //send friend request to user;
+            if (this.friendReqestsSent == null)
+                this.friendReqestsSent = [];
             this.friendReqestsSent.push(user.username);
             user.recieveFriendRequest(this);
         }
@@ -75,29 +78,29 @@ class User {
     acceptFriendRequest(user)
     {
         const username = user.username;
+        if (this.friends == null)
+            this.friends = [];
+        for (var i = 0; i < this.friendReqests.length; i++) {
+            if (this.friendReqests[i] == username) {
+                this.friends.push(username);
+                user.friends.push(this.username);
+                //remove item by swapping to last element then popping array
+                const len = this.friendReqests.length;
+                this.friendReqests[i] = this.friendReqests[len - 1];
+                this.friendReqests.pop();
+            }
+        }
+    }
+
+    rejectFriendRequest(user)
+    {
+        const username = user.username;
         if (this.friendReqests != null)
         {
             for (var i = 0; i < this.friendReqests.length; i++)
             {
                 if (this.friendReqests[i] == username)
                 {
-                    this.friends.push(username);
-                    user.friends.push(this.username);
-                    //remove item by swapping to last element then popping array
-                    const len = this.friendReqests.length;
-                    this.friendReqests[i] = this.friendReqests[len - 1];
-                    this.friendReqests.pop();
-                }
-            }
-
-        }
-    }
-
-    rejectFriendRequest(user) {
-        const username = user.username;
-        if (this.friendReqests != null) {
-            for (var i = 0; i < this.friendReqests.length; i++) {
-                if (this.friendReqests[i] == username) {
                     //remove item by swapping to last element then popping array
                     const len = this.friendReqests.length;
                     this.friendReqests[i] = this.friendReqests[len - 1];
@@ -110,26 +113,51 @@ class User {
 
     hasSentFriendRequest(username)
     {
-        for (var i = 0; i < this.friendReqestsSent.length; i++)
-            if (this.friendReqestsSent[i] == username)
-                return true;
-        for (var i = 0; i < this.friendReqests.length; i++)
-            if (this.friendReqests[i] == username)
-                return true;
+        if (this.friendReqestsSent != null)
+        {
+            for (var i = 0; i < this.friendReqestsSent.length; i++)
+                if (this.friendReqestsSent[i] == username)
+                    return true;
+        }
+        if (this.friendReqests != null)
+        {
+            for (var i = 0; i < this.friendReqests.length; i++)
+                if (this.friendReqests[i] == username)
+                    return true;
+        }
         return false;
     }
 
     isFriends(username)
     {
-        for (var i = 0; i < this.friends.length; i++)
-            if (this.friends[i] == username)
-                return true;
+        if (this.friends != null)
+        {
+            for (var i = 0; i < this.friends.length; i++)
+                if (this.friends[i] == username)
+                    return true;
+        }
         return false;
     }
 
-    getAnnouncements(user)
+    async getAnnouncements(database)
     {
-        return this.Announcements;
+        if (database == null)
+            throw 'Database is null in User.getAnnouncements()';
+        if (this.friends != null)
+        {
+            const announcements = [];
+
+            for (var i = 0; i < this.friends.length; i++)
+            {
+                const user = await database.getUser(this.friends[i]);
+                if (user.Announcements != null)
+                    user.Announcements.forEach(announ => announcements.push(announ));
+            }
+            console.log(announcements);
+            return announcements;
+        }
+        else
+            return this.Announcements;
     }
 
     postAnnouncement(text)

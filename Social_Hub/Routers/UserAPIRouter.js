@@ -11,14 +11,22 @@ userAPIRouter.get('/getusername', function (req, res) {
 });
 
 userAPIRouter.get('/getannouncements', async function (req, res) {
-    var user = await database.getUser(req.cookies.user);
-    res.send(user.Announcements);
+    try
+    {
+        var user = await database.getUser(req.cookies.user);
+        const announcements = await user.getAnnouncements(database);
+        res.send(announcements);
+    }
+    catch (e)
+    {
+        console.log(e);
+        res.send([]);
+    }
 });
 
 userAPIRouter.post('/postannouncement', async function (req, res) {
     var user = await database.getUser(req.cookies.user);
     const post = req.body;
-    user = User.MakeUserInstance(user);
     user.postAnnouncement(post.text);
     database.saveUser(user).catch(e => console.log(e));
     res.send({ 'success': true });

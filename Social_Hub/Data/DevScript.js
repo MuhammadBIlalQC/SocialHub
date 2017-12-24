@@ -1,5 +1,6 @@
 ﻿const database = require('./Database');
 const User = require('./Entities/User');
+const Message = require('./Entities/Message');
 
 
 const listOfDummyUsers = ['DummyUser1', 'DummyUser2', 'd3', 'd4', 'd5', 'd6'];
@@ -55,7 +56,9 @@ async function test()
     console.log(user);
 }
 
-
+//database.postMessage('d3', 'd4', 'Hello d4');
+database.getMessages('d3', 'd4').then(res => console.log(res));
 //resetDummies();
 
-var users = database.getAllUsers().then(users => console.log(users)).catch(e => console.log('error has occurred'));
+//var users = database.getAllUsers().then(users => console.log(users)).catch(e => console.log('error has occurred'));
+

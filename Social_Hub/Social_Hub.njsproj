@@ -50,9 +50,12 @@
     <Compile Include="Data\Entities\User.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Public\Scripts\friends.js" />
-    <Compile Include="Public\Scripts\hub.js" />
-    <Compile Include="Public\Scripts\index.js">
+    <Compile Include="Public\Scripts\Friend-Sidebar.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Public\Scripts\Friends-View.js" />
+    <Compile Include="Public\Scripts\Navbar.js" />
+    <Compile Include="Public\Scripts\Index-Posts.js">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Routers\AccountRouter.js">

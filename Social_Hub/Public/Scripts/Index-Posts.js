@@ -5,7 +5,8 @@
         this.textAreaStyle = {
             'width': '800px',
             'height': '200px',
-            'marginTop': '40px'
+            'marginTop': '40px',
+            'maxWidth': '100%',
         };
     } // end of constructor()
 
@@ -28,6 +29,7 @@
       this.state = { date: this.getDate() };
       this.style = {
           'width': '800px',
+          'maxWidth': '100%',
           'minHeight': '200px',
           //'border': '1px solid gray',
           'padding': '10px',
@@ -66,15 +68,14 @@
         });
 
         $.get('/api/user/getannouncements', function (data) {
+            console.log(data);
             if (data != null)
             {
                 var fetchedAnnouncements = [];
-                console.log(data.length);
                 for (var i = 0; i < data.length; i++)
                 {
                     fetchedAnnouncements.push(<Announcement user={data[i].username} msg={data[i].text} />);
                 }
-                console.log(fetchedAnnouncements);
                 self.setState({ Announcements: fetchedAnnouncements });
             }
         });
@@ -91,10 +92,9 @@
             const childID = this.state.childrenID + 1;
             const posts = this.state.Announcements;
             $.post('/api/user/postannouncement', { text: userMessage }, function (data) {
-                console.log('posted data');
+                //to do if error
             });
             posts.unshift(<Announcement user={this.state.user} msg={userMessage} key={childID} />);
-            console.log(posts);
             this.setState({ Announcements: posts, childrenID: childID });
         }
         

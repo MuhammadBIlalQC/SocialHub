@@ -14,7 +14,7 @@ class Database {
     async addUser(username, password)
     {
         const db = await mongoClient.connect(connectionString);
-
+        username = username.toLowerCase(username);
         const userExists = await this.findUser(username, db);
         if (userExists)
         {
@@ -76,10 +76,13 @@ class Database {
         const db = await mongoClient.connect(connectionString);
         const user = await db.collection("Users").findOne({ 'username': username });
         db.close();
-        return user;
+        if (user == null)
+            return null;
+        else
+            return User.MakeUserInstance(user);
     }
 
-    async getAllUsers(username)
+    async getAllUsers()
     {
         const db = await mongoClient.connect(connectionString);
         const users = await db.collection('Users').find({}).toArray();
@@ -102,7 +105,20 @@ class Database {
         db.close();
     }
 
-    async messageUser(srcUsername, dstUsername, text)
+    async getMessages(srcUsername, dstUsername)
+    {
+        if (srcUsername == null || dstUsername == null)
+        {
+            throw 'Usernames must be defined to message from a to b';
+        }
+
+        const messageId = Message.generateMessageId(srcUsername, dstUsername);
+        const db = await mongoClient.connect(connectionString);
+        const messages = await db.collection('Messages').find({ messageID: messageId }).toArray();
+        db.close();
+        return messages;
+    }
+    async postMessage(srcUsername, dstUsername, text)
     {
         if (srcUsername == null || dstUsername == null)
         {
@@ -119,6 +135,7 @@ class Database {
 
         db.close();
     }
+
 }
 
 

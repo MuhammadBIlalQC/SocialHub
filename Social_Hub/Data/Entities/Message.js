@@ -13,10 +13,7 @@ class Message {
 
         this.date = new Date();
         this.messageID = null;
-        if (srcUser < dstUser)
-            this.messageID = srcUser + '-' + dstUser;
-        else
-            this.messageID = dstUser + '-' + srcUser;
+        this.messageID = Message.generateMessageId(srcUser, dstUser);
     }
 
     get sourceUser() {
@@ -29,6 +26,17 @@ class Message {
 
     get messageText() {
         return this.text;
+    }
+
+    static generateMessageId(srcUser, dstUser)
+    {
+        var messageID = '';
+        if (srcUser < dstUser)
+            messageID = srcUser + '-' + dstUser;
+        else
+            messageID = dstUser + '-' + srcUser;
+
+        return messageID;
     }
 }
 

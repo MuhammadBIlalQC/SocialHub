@@ -1,7 +1,7 @@
 ﻿var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-
+var database = require('../Data/Database');
 var accountRouter = express.Router();
 
 accountRouter.get('/', function (req, res) {
@@ -11,19 +11,30 @@ accountRouter.get('/', function (req, res) {
 
 accountRouter.get('/signin', function (req, res) {
     res.render('Signin');
-}).post('/signin', function (req, res) {
-    var form = req.body;
-    if (form.username != "")
+}).post('/signin', async function (req, res) {
+    try
     {
-        //authentication
-        res.cookie('user', form.username);
+        var form = req.body;
+        const signinAsUser = form.username;
+        const user = await database.getUser(signinAsUser);
+        if (user != null)
+        {
+            //authentication
+            res.cookie('user', signinAsUser);
 
-        //on success, redirect to main page
-        res.redirect('/');
+            //on success, redirect to main page
+            res.redirect('/');
+        }
+        else
+        {
+            res.send('User Does not Exist');
+        }
     }
-    else
+
+    catch (err)
     {
-        res.send('Error');
+        console.log(err);
+        res.send('Error has occurred while attempting to sign in');
     }
 });
 
