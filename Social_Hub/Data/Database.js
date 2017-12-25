@@ -8,7 +8,16 @@ var Message = require('./Entities/Message');
 class Database {
     constructor()
     {
-        //nothing to do yet;
+        this.init();
+    }
+
+    async init()
+    {
+        const db = await mongoClient.connect(connectionString);
+        db.createCollection('Users', { strict: true }, function (error, collection) {
+        });
+        db.createCollection('Messages', { strict: true }, function (error, collection) {
+        });
     }
 
     async addUser(username, password)
