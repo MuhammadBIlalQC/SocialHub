@@ -16,18 +16,23 @@ accountRouter.get('/signin', function (req, res) {
     {
         var form = req.body;
         const signinAsUser = form.username;
+        const signinAsUserPassword = form.password;
         const user = await database.getUser(signinAsUser);
         if (user != null)
         {
-            //authentication
-            res.cookie('user', signinAsUser);
-
-            //on success, redirect to main page
-            res.redirect('/');
+            if (user.isPassword(signinAsUserPassword))
+            {
+                res.cookie('user', signinAsUser);
+                res.redirect('/');
+            }
+            else
+            {
+                res.render('Signin', { invalid: 'Invalid Username or Password' });
+            }
         }
         else
         {
-            res.send('User Does not Exist');
+            res.render('Signin', { invalid: 'Invalid Username or Password' });
         }
     }
 

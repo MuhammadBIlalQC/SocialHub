@@ -159,7 +159,6 @@ class User {
                 if (user.Announcements != null)
                     user.Announcements.forEach(announ => announcements.push(announ));
             }
-            console.log(announcements);
             announcements.sort((elemA, elemB) => {
                 try
                 {

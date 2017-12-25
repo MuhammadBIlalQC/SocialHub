@@ -29,7 +29,6 @@ class Database {
                 if (err)
                     throw err;
 
-                console.log("1 document inserted");
             });
         }
 
@@ -130,7 +129,6 @@ class Database {
         const db = await mongoClient.connect(connectionString);
 
         db.collection('Messages').insertOne(message, function (err, res) {
-            console.log('ok');
         });
 
         db.close();

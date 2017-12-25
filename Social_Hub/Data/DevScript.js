@@ -1,4 +1,9 @@
-﻿const database = require('./Database');
+﻿/*
+    Small script to test out functionality
+*/
+
+
+const database = require('./Database');
 const User = require('./Entities/User');
 const Message = require('./Entities/Message');
 
@@ -19,16 +24,6 @@ async function resetDummies()
     var d5 = await database.getUser('d5').catch(err => console.log('error'));
     var d6 = await database.getUser('d6').catch(err => console.log('error'));
 
-    d3 = User.MakeUserInstance(d3);
-    d4 = User.MakeUserInstance(d4);
-    d5 = User.MakeUserInstance(d5);
-    d6 = User.MakeUserInstance(d6);
-
-    d4.sendFriendRequest(d3);
-    d5.sendFriendRequest(d3);
-    d6.sendFriendRequest(d3);
-
-    /* d3 friending d4,d5,d6
     d3.sendFriendRequest(d4);
     d3.sendFriendRequest(d5);
     d3.sendFriendRequest(d6);
@@ -36,7 +31,7 @@ async function resetDummies()
     d4.acceptFriendRequest(d3);
     d5.acceptFriendRequest(d3);
     d6.acceptFriendRequest(d3);
-    */
+
     database.saveUser(d3);
     database.saveUser(d4);
     database.saveUser(d5);
@@ -67,10 +62,10 @@ async function test2()
     console.log(user.isPassword('mypw3'));
 }
 
-test2();
+
 //database.postMessage('d3', 'd4', 'Hello d4');
 //database.getMessages('d3', 'd4').then(res => console.log(res));
-//resetDummies();
+resetDummies();
 
 //var users = database.getAllUsers().then(users => console.log(users)).catch(e => console.log('error has occurred'));
 

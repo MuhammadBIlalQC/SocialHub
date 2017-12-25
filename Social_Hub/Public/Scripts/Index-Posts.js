@@ -44,7 +44,6 @@
              return 'Just Now';
         const date = this.props.date;
         const year = date.substring(0, 4);
-        console.log(date);
         const month = date.substring(5, 7);
         const day = date.substring(8, 10);
         return month + '/' + day + '/' + year;
@@ -74,10 +73,8 @@
         });
 
         $.get('/api/user/getannouncements', function (data) {
-            console.log(data);
             if (data != null)
             {
-                console.log(data);
                 var fetchedAnnouncements = [];
                 for (var i = 0; i < data.length; i++)
                 {

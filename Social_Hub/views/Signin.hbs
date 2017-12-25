@@ -2,7 +2,11 @@
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <style>
+        * {
+            font-family: 'Open Sans', sans-serif;
+        }
         body {
             overflow: hidden;
             width: 100%;
@@ -60,6 +64,7 @@
             <li><input style="float: right; width: 120px;margin-top: 12px; margin-right: 15px;" type="submit" value="Sign in" class="btn btn-primary"></li>
             <li><label style="float: right;">Password: <input type="password" name="password" style="color: black;" tabindex="2"></label></li>
             <li><label style="float: right;">Username: <input type="text" name="username" style="color: black;" tabindex="1"></label></li>
+            <li><label style="float: right; color: red !important;">{{invalid}}</label></li>
         </ul>
     </form>
     <div class="container" id="content">
@@ -69,8 +74,8 @@
             <form method="post" action="/account/register">
                 <label for="reg_username">Username: </label> <input type="text" id="reg_username" name="reg_username" maxlength="10" style="color: black;" required> <br>
                 <label for="reg_password">Password: </label> <input type="text" id="reg_password" name="reg_password" maxlength="10" style="color: black;" required> <br>
-                <label for="reg_password">Confirm Password: </label> <input type="text" id="reg_password" name="reg_password" maxlength="10" style="color: black;" disabled="true"> <br>
-                <label for="reg_email">Email: </label> <input type="text" id="reg_email" name="reg_email" style="color: black;" disabled="true"> <br>
+                <label for="reg_password">Confirm Password: </label> <input type="text" id="reg_password" name="reg_password" maxlength="10" style="color: black;" disabled> <br>
+                <label for="reg_email">Email: </label> <input type="text" id="reg_email" name="reg_email" style="color: black;" disabled> <br>
                 <input type="submit" value="Register!" style="width: 120px; position: relative; left: 190px;" class="btn btn-primary" required>
             </form>
         </div>
