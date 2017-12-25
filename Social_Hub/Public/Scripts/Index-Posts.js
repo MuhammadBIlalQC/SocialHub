@@ -35,22 +35,28 @@
           'padding': '10px',
           'marginTop': '20px',
           'boxShadow': '0px 4px 10px 0px rgba(0,0,0,0.2)',
+          'position': 'relative',
       };
     }
 
     getDate() {
-      if (!this.props.date)
-          return 'Just Now';
-      const date = this.props.date;
-      return  '' + date.Month + '/' + date.Day + '/' + date.Year + ' ' + date.Hour + ':' + (date.Minutes < 10 ? '0' : '') + date.Minutes  +' am/pm';
+        if (!this.props.date)
+             return 'Just Now';
+        const date = this.props.date;
+        const year = date.substring(0, 4);
+        console.log(date);
+        const month = date.substring(5, 7);
+        const day = date.substring(8, 10);
+        return month + '/' + day + '/' + year;
 
     } 
 
     render() {
       return (
           <div className="announcement" style={this.style}>
-            <h3 className="prompter"><i>{this.props.user} ({this.state.date}) </i></h3> <br />
+            <h3 className="prompter"><i>{this.props.user}</i></h3> <br />
             <p style={{ 'paddingLeft': '20px' }} className="prompter-msg">{this.props.msg}</p>
+            <i style={{ position: 'absolute', bottom: '5px', right: '5px' }}>{this.state.date}</i>
         </div>
       )
     } 
@@ -71,10 +77,11 @@
             console.log(data);
             if (data != null)
             {
+                console.log(data);
                 var fetchedAnnouncements = [];
                 for (var i = 0; i < data.length; i++)
                 {
-                    fetchedAnnouncements.push(<Announcement user={data[i].username} msg={data[i].text} />);
+                    fetchedAnnouncements.push(<Announcement user={data[i].username} msg={data[i].text} date={data[i].date} />);
                 }
                 self.setState({ Announcements: fetchedAnnouncements });
             }

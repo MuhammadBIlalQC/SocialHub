@@ -160,6 +160,20 @@ class User {
                     user.Announcements.forEach(announ => announcements.push(announ));
             }
             console.log(announcements);
+            announcements.sort((elemA, elemB) => {
+                try
+                {
+                    if (elemA.date < elemB.date)
+                        return -1;
+                    if (elemA.date > elemB.date)
+                        return 1;
+                    return 0; //equal or default
+                }
+                catch (e)
+                {
+                    return 0;
+                }
+            })
             return announcements;
         }
         else
