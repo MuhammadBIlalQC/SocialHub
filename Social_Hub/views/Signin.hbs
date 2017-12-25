@@ -74,11 +74,12 @@
             <h1>Don't have an Account? Register right here!</h1>
             <form method="post" action="/account/register">
                 <label for="reg_username">Username: </label> <input type="text" id="reg_username" name="reg_username" maxlength="10" style="color: black;" required> <br>
-                <label for="reg_password">Password: </label> <input type="text" id="reg_password" name="reg_password" maxlength="10" style="color: black;" required> <br>
-                <label for="reg_password">Confirm Password: </label> <input type="text" id="reg_password" name="reg_password" maxlength="10" style="color: black;" disabled> <br>
+                <label for="reg_password">Password: </label> <input type="password" id="reg_password" name="reg_password" maxlength="10" style="color: black;" required> <br>
+                <label for="reg_password">Confirm Password: </label> <input type="password" id="reg_password" name="reg_password" maxlength="10" style="color: black;" disabled> <br>
                 <label for="reg_email">Email: </label> <input type="text" id="reg_email" name="reg_email" style="color: black;" disabled> <br>
                 <input type="submit" value="Register!" style="width: 120px; position: relative; left: 190px;" class="btn btn-primary" required>
             </form>
+            <p>{{validation}}</p>
         </div>
         <div class="col-md-7" id="bear-pic">
             <!--- Bear Pic goes here --->

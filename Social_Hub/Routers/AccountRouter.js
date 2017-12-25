@@ -43,14 +43,57 @@ accountRouter.get('/signin', function (req, res) {
     }
 });
 
-accountRouter.post('/register', function (req, res) {
-    //register new user
-    res.send('registration goes here');
+accountRouter.post('/register', async function (req, res) {
+    try 
+    {
+        const username = req.body.reg_username;
+        const password = req.body.reg_password;
+        
+        if (username == null || password == null)
+        {
+            res.render('Signin');
+            return;
+        }
+        const validation = validateAccount(username, password);
+        if (validation != '')
+        {
+            res.render('Signin', { validation: validation });
+            return
+        }
+        const user = await database.getUser(username);
+        if (user != null)
+        {
+            res.render('Signin', { validation: 'Username already exists' });
+            return
+        }
+        else
+        {
+            await database.addUser(username, password);
+            res.cookie('user', username);
+            res.redirect('/')
+        }
+        
+        
+    }
+    catch (e)
+    {
+        res.send('failed');
+    }
 });
 
 accountRouter.get('/signout', function (req, res) {
     res.clearCookie('user');
     res.redirect('/account/signin');
-})
+});
+
+function validateAccount(username, password)
+{
+    var validation = '';
+    if (username.length < 8)
+        validation += 'Username must be at least 6 characters. ';
+    if (password.length < 6)
+        validation += 'Password must be at least 6 characters.';
+    return validation;
+}
 
 module.exports = accountRouter;
