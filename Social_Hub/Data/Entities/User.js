@@ -1,4 +1,5 @@
 ﻿var Announcement = require('./Announcement');
+var bcrypt = require('bcrypt');
 
 class User {
     constructor(username, password, dontHashIt) {
@@ -16,9 +17,14 @@ class User {
 
     hashPassword(password)
     {
-        return 'hashed' + password;
+        const hashedPassword = bcrypt.hashSync(password, 10);
+        return hashedPassword;
     }
 
+    isPassword(password)
+    {
+        return bcrypt.compareSync(password, this.password);
+    }
     getMessages()
     {
         return this.messages;

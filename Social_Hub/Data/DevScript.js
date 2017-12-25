@@ -56,8 +56,20 @@ async function test()
     console.log(user);
 }
 
+
+async function test2()
+{
+    //const user = new User('example', 'mypw');
+    //console.log(user);
+    //console.log('isPassword: ' + user.isPassword('mypw'));
+    //database.addUser('example', 'mypw');
+    const user = await database.getUser('example');
+    console.log(user.isPassword('mypw3'));
+}
+
+test2();
 //database.postMessage('d3', 'd4', 'Hello d4');
-database.getMessages('d3', 'd4').then(res => console.log(res));
+//database.getMessages('d3', 'd4').then(res => console.log(res));
 //resetDummies();
 
 //var users = database.getAllUsers().then(users => console.log(users)).catch(e => console.log('error has occurred'));
