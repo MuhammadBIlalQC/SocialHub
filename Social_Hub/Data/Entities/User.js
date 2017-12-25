@@ -159,6 +159,10 @@ class User {
                 if (user.Announcements != null)
                     user.Announcements.forEach(announ => announcements.push(announ));
             }
+            if (this.Announcements != null)
+                for (var i = 0; i < this.Announcements.length; i++)
+                    announcements.push(this.Announcements[i]);
+
             announcements.sort((elemA, elemB) => {
                 try
                 {
@@ -172,7 +176,7 @@ class User {
                 {
                     return 0;
                 }
-            })
+            });
             return announcements;
         }
         else
