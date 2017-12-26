@@ -3,7 +3,7 @@
     constructor(props)
     {
         super(props);
-        this.state = { showBody: false, messages: [], lastFetched: null};
+        this.state = { showBody: false, messages: [], lastFetched: null, scrollBottom: true};
         var right = 0;
         if (this.props.nthChild != null)
             right = this.props.nthChild * 205;
@@ -57,14 +57,9 @@
         this.sendMessage = this.sendMessage.bind(this);
         this.loadMessages = this.loadMessages.bind(this);
         this.inputKeyEnter = this.inputKeyEnter.bind(this);
+        this.scrollToBottomOfChat = this.scrollToBottomOfChat.bind(this);
 
         this.loadMessages();
-
-        /*
-        const d1 = new Date();
-        const d2 = new Date();
-        if (d1 < d2)
-            console.log('true'); */
     }
 
 
@@ -76,19 +71,29 @@
     toggleChat()
     {
         const showBody = this.state.showBody;
-        this.setState({ showBody: !showBody });
-
+        const updatedState = { showBody: !showBody };
+        if (this.state.scrollBottom)
+        {
+            updatedState.scrollBottom = false;
+            this.setState(updatedState);
+            setTimeout(this.scrollToBottomOfChat, 500);
+            return;
+        }
+        this.setState(updatedState);
+        
     }
 
     loadMessages()
     {
         const self = this;
+        var scrollBottom = false;
         $.post('/api/friend/getmesssages', { friend: this.props.user }, function (data) {
             const messages = self.state.messages != null ? self.state.messages : [];
             const dates = [];
-            if (data != null || data.length != 0)
+            if (data != null && data.length != 0)
             {
                 data.forEach(message => {
+                    // new messages?
                     const pushMessagetoChat = self.state.lastFetched == null ? true : message.date > self.state.lastFetched;
                     if (pushMessagetoChat)
                     {
@@ -96,12 +101,18 @@
                         user = user == self.props.user ? user : 'you';
                         messages.push(<p>{user}: {message.text}</p>);
                         dates.push(message.date);
+                        scrollBottom = true;
                     }
                 });
                 self.setState({ messages: messages, lastFetched: data[data.length - 1].date });
+
+                if (scrollBottom && self.state.showBody)
+                {
+                    self.scrollToBottomOfChat();
+                    self.setState({})
+                }
             }
         });
-
         setTimeout(this.loadMessages, 500);
     }
 
@@ -117,16 +128,21 @@
         {
             $('#textInputChat-' + this.props.user).val('');
             const messages = this.state.messages;
-            /* this.loadMessage() takes care of posting message into the chatbox
-            messages.push(<p>you: {text}</p>);
-            this.setState({ messages: messages });
-            */
 
             $.post('/api/friend/postmessage', { friend: this.props.user, message: text }, function (data) {
                 // to do on error
             });
+
+            //scroll to bottom of chat
+            this.scrollToBottomOfChat();
         }
 
+    }
+
+    scrollToBottomOfChat()
+    {
+        const textArea = $('#' + "textOutputChat-" + this.props.user);
+        textArea.scrollTop(textArea.offset().top);
     }
     render()
     {
@@ -135,7 +151,7 @@
                 <button style={this.buttonStyle} className="btn btn-primary" onClick={this.toggleChat} >{this.props.user != null ? this.props.user : 'Error'} </button>
                 {this.state.showBody == false ? null :
                     <div style={this.bodyStyle}>
-                    <div id="textOutputChat" style={this.textAreaStyle}>
+                    <div id={"textOutputChat-"+this.props.user} style={this.textAreaStyle}>
                         {this.state.messages}
                     </div>
                     <input id={"textInputChat-" + this.props.user} type="text" style={this.textInputStyle} onKeyDown={this.inputKeyEnter} />
