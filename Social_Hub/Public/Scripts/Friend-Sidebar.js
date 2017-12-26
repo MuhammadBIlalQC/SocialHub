@@ -205,7 +205,7 @@ class FriendPanel extends React.Component
     {
         return (
         <div>
-            <div className="container">
+            <div className="container" id="friendSidebar" >
                 <div className="col-sm-3 col-md-2 sidebar">
                     <ul className="nav nav-sidebar">
                             <li className="active"><a href="#">Welcome {this.state.user}! <span className="sr-only">(current)</span></a></li>

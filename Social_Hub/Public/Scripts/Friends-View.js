@@ -31,8 +31,11 @@ class FriendRequest extends React.Component
         this.style = {
             'border': 'black 1px solid',
             'margin': '20px',
-            'padding': '20px',
             'display': 'inlineBlock',
+            'position': 'relative',
+            'height': '120px',
+            'overflow': 'none',
+            'width': '400px',
         }
         this.acceptFriendRequest = this.acceptFriendRequest.bind(this);
         this.removeFriendRequest = this.removeFriendRequest.bind(this);
@@ -55,11 +58,14 @@ class FriendRequest extends React.Component
     render()
     {
         return (
-            <div style={this.style} className={this.props.user + 'friendrequest'}>
-                <h3>{this.props.user} <span className="text-muted"> sent you a friend request!</span></h3>
-                <button className={"glyphicon glyphicon-ok btn btn-primary " + this.props.user + 'buttons'} style={{ width: '60px', margin: '5px' }} onClick={this.acceptFriendRequest} ></button>
-                <button style={{ width: '60px', margin: '5px' }} className={"glyphicon glyphicon-remove btn btn-primary " + this.props.user + 'buttons'} onClick={this.removeFriendRequest}></button>
-                <p className={this.props.user + 'outtext'} ></p>
+            <div style={this.style} className={this.props.user + 'friendrequest' + ' col-md-3' }>
+                <img style={{ height: '100%', position: 'absolute', left: '0px', }} src="/UserImages/placeholder.png" />
+                <div style={{ position: 'absolute', top: '10px', 'right': '5px', }}>
+                    <p>{this.props.user} <span className="text-muted"> sent you a friend request!</span></p>
+                    <button className={"glyphicon glyphicon-ok btn btn-primary " + this.props.user + 'buttons'} style={{ width: '60px', margin: '5px' }} onClick={this.acceptFriendRequest} ></button>
+                    <button style={{ width: '60px', margin: '5px' }} className={"glyphicon glyphicon-remove btn btn-primary " + this.props.user + 'buttons'} onClick={this.removeFriendRequest}></button>
+                    <p className={this.props.user + 'outtext'} ></p>
+                </div>
             </div>
             )
     }
@@ -68,31 +74,42 @@ class FriendRequest extends React.Component
 class FriendsAddables extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { user: this.props.user, acceptionView: [] };
+        this.state = { user: this.props.user, acceptionView: [], buttonClickText: 'Add Friend', buttonClickClass: 'btn btn-primary' };
         this.style = {
             'border': 'black 1px solid',
             'margin': '20px',
-            'padding': '20px',
             'display': 'inlineBlock',
+            'position': 'relative',
+            'height': '120px',
+            'overflow': 'none',
+            'width': '400px',
         }
         this.addFriend = this.addFriend.bind(this);
+
+        this.buttonClickText = this.buttonClickText.bind(this);
     }
 
+    buttonClickText(e)
+    {
+        this.setState({ buttonClickText: 'Friend Request Sent!', buttonClickClass: 'btn btn-success' });
+    }
     addFriend() {
         $.post('/api/friend/sendFriendRequest', { friendRequestUsername: this.props.user }, function (data) {
 
         });
 
-        $('.' + this.props.user + 'friendsAddables-buttons').fadeOut();
-        $('.' + this.props.user + 'friendsAddables-outtext').text('Friend Request Sent!');
-        console.log('clicked add friend');
+        this.buttonClickText();
     }
     render() {
         return (
-            <div style={this.style} className={this.props.user + 'friendsAddables'}>
-                <h3>{this.props.user}</h3>
-                <button style={{ width: '60px', margin: '5px' }} className={"glyphicon glyphicon-plus btn btn-primary " + this.props.user + 'friendsAddables-buttons'} onClick={this.addFriend}></button>
-                <p className={this.props.user + 'friendsAddables-outtext'} ></p>
+            <div style={this.style} className={this.props.user + 'friendsAddables ' + ' col-md-3'}>
+                <img style={{ height: '100%', position: 'absolute', left: '0px', }} src="/UserImages/placeholder.png" />
+                <div style={{ position: 'absolute', bottom: '0px', right: '0px', marginRight: '20px', height: '100%', textAlign: 'right', lineHeight: '5px', }}>
+                    <h3 style={{  }}>{this.props.user}</h3> <br />
+                    <button style={{}} onClick={this.addFriend} className={this.state.buttonClickClass} onClick={this.addFriend}>
+                        {this.state.buttonClickText}
+                    </button>
+                </div>
             </div>
         )
     }
@@ -109,7 +126,8 @@ class FriendsView extends React.Component
             var friends = [];
             for (var i = 0; i < data.length; i++)
                 friends.push(<Friend user={data[i]} />);
-            self.setState({ friends: friends });
+            /* Temperory Disable of Showing Friends in Find Friends */
+            /*self.setState({ friends: friends }); */
         });
 
         $.get('/api/friend/getfriendrequests', function (data) {
@@ -122,7 +140,7 @@ class FriendsView extends React.Component
         $.get('/api/friend/allpossiblefriends', function (data) {
             var friendables = [];
             for (var i = 0; i < data.length; i++)
-                friendables.push(<FriendsAddables user={data[i]} />);
+                friendables.push(<FriendsAddables user={data[i]} offset={i % 3 == 0 ? true : false} />);
             self.setState({ friendables: friendables });
         });
     }
@@ -131,11 +149,15 @@ class FriendsView extends React.Component
     {
         return (
             <div>
-                <h1>Friends</h1>
-                {this.state.friends}
-                {this.state.friendRequests}
-                <h1>Add New Friends!</h1>
-                {this.state.friendables}
+                <div className="row">
+                    {this.state.friends}
+                </div>
+                <div className="row">
+                    {this.state.friendRequests.length == 0 ? null : <div> <h1>Friend Requests</h1> {this.state.friendRequests} </div>}
+                </div>
+                <div className="row">
+                    {this.state.friendables.length == 0 ? null : <div> <h1>Add New Friends</h1> {this.state.friendables} </div>}
+                </div>
             </div>
         )
     }

@@ -76,6 +76,7 @@
     <Compile Include="server.js" />
     <Content Include="Public\bear.png" />
     <Content Include="Public\friends-sidebar.css" />
+    <Content Include="Public\UserImages\placeholder.png" />
     <Content Include="views\Friends.hbs">
       <SubType>Code</SubType>
     </Content>
@@ -94,6 +95,7 @@
     <Folder Include="AppConfiguration\" />
     <Folder Include="Data\" />
     <Folder Include="Data\Entities\" />
+    <Folder Include="Public\UserImages\" />
     <Folder Include="Public\Scripts\" />
     <Folder Include="views\" />
     <Folder Include="Public\" />
