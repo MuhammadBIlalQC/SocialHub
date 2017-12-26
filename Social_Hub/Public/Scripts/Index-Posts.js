@@ -7,12 +7,14 @@
             'height': '200px',
             'marginTop': '40px',
             'maxWidth': '100%',
+            'padding': '15px',
+            'fontSize': '16px',
         };
-    } // end of constructor()
+      }
 
     render() {
       return (
-        <div>
+          <div >
          <textarea id="AnnouncementPost" className="post" style={ this.textAreaStyle }
             placeholder="Post an Anouncement..."></textarea><br/>
           <input className="btn btn-primary post-submit" type="button" value="Post" onClick={this.props.click} />
@@ -36,6 +38,9 @@
           'marginTop': '20px',
           'boxShadow': '0px 4px 10px 0px rgba(0,0,0,0.2)',
           'position': 'relative',
+          'display': 'none',
+          'fontSize': '16px',
+
       };
     }
 
@@ -49,10 +54,14 @@
         return month + '/' + day + '/' + year;
 
     } 
-
+    componentDidMount()
+    {
+        $('#' + this.props.elemID).slideDown();
+        
+    }
     render() {
       return (
-          <div className="announcement" style={this.style}>
+          <div id={this.props.elemID} className="announcement" style={this.style}>
             <h3 className="prompter"><i>{this.props.user}</i></h3> <br />
             <p style={{ 'paddingLeft': '20px' }} className="prompter-msg">{this.props.msg}</p>
             <i style={{ position: 'absolute', bottom: '5px', right: '5px' }}>{this.state.date}</i>
@@ -78,9 +87,9 @@
                 var fetchedAnnouncements = [];
                 for (var i = 0; i < data.length; i++)
                 {
-                    fetchedAnnouncements.push(<Announcement user={data[i].username} msg={data[i].text} date={data[i].date} />);
+                    fetchedAnnouncements.push(<Announcement user={data[i].username} msg={data[i].text} date={data[i].date} elemID={'announ' + i} key={'announ' + i} />);
                 }
-                self.setState({ Announcements: fetchedAnnouncements });
+                self.setState({ Announcements: fetchedAnnouncements, childrenID: fetchedAnnouncements.length });
             }
         });
 
@@ -98,7 +107,7 @@
             $.post('/api/user/postannouncement', { text: userMessage }, function (data) {
                 //to do if error
             });
-            posts.unshift(<Announcement user={this.state.user} msg={userMessage} key={childID} />);
+            posts.unshift(<Announcement user={this.state.user} msg={userMessage} elemID={'announ' + childID} key={childID} />);
             this.setState({ Announcements: posts, childrenID: childID });
         }
         
@@ -109,7 +118,7 @@
             <div>
                 <AnnouncementPost click={this.postAnnouncement} />
                 <div>
-                    {this.state.Announcements}
+                    {this.state.Announcements.length != 0 ? this.state.Announcements : <h2 className="text-muted">Add an Announcement or add friends to see theirs!</h2>}
                 </div>
            </div>
       )

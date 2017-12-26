@@ -14,12 +14,14 @@
             right: right+'px',
             marginRight: '5px',
             zIndex: '50',
+            display: 'none',
         }
 
         this.buttonStyle = {
             width: '100%',
             height: '100%',
-            borderRadius: '0px',
+            borderRadius: '8px 8px 0px 0px',
+
         }
         this.bodyStyle = {
             height: '300px',
@@ -32,6 +34,7 @@
             margin: '0px',
             position: 'absolute',
             bottom: '0px',
+            padding: '5px',
         }
         this.sendButtonStyle = {
             width: '20%',
@@ -46,6 +49,7 @@
             height: '270px',
             width: '100%',
             overflowY: 'scroll',
+            padding: '5px',
             backgroundColor: 'rgba(255,255,255,1)'
         }
 
@@ -61,6 +65,12 @@
         const d2 = new Date();
         if (d1 < d2)
             console.log('true'); */
+    }
+
+
+    componentDidMount()
+    {
+        $('#' + this.props.elemID).fadeIn();
     }
 
     toggleChat()
@@ -121,7 +131,7 @@
     render()
     {
         return (
-            <div style={this.style}>
+            <div id={this.props.elemID} style={this.style}>
                 <button style={this.buttonStyle} className="btn btn-primary" onClick={this.toggleChat} >{this.props.user != null ? this.props.user : 'Error'} </button>
                 {this.state.showBody == false ? null :
                     <div style={this.bodyStyle}>
@@ -149,7 +159,7 @@ class ChatsView extends React.Component {
     {
 
         for (var i = 0; i < this.chats.length; i++) {
-            this.chatHeads.push(<ChatHead user={this.chats[i]} nthChild={i + 1} />);
+            this.chatHeads.push(<ChatHead user={this.chats[i]} nthChild={i + 1} elemID={'chat' + i} key={'chat' + i} />);
         }
         return <div>{this.chatHeads}</div>
     }
@@ -160,10 +170,14 @@ class FriendPanel extends React.Component
     constructor(props)
     {
         super(props);
-        this.state = { friends: [], chatsLoaded: [] };
+        this.state = { user: '', friends: [], chatsLoaded: [] };
         const self = this;
 
         this.openChat = this.openChat.bind(this);
+
+        $.get('/api/user/getusername', function (data) {
+            self.setState({ user: data.user });
+        });
 
         $.get('/api/friend/getfriends', function (data) {
             const friends = [];
@@ -194,16 +208,10 @@ class FriendPanel extends React.Component
             <div className="container">
                 <div className="col-sm-3 col-md-2 sidebar">
                     <ul className="nav nav-sidebar">
-                     <li className="active"><a href="#">Welcome! <span className="sr-only">(current)</span></a></li>
+                            <li className="active"><a href="#">Welcome {this.state.user}! <span className="sr-only">(current)</span></a></li>
                     </ul>
                     <ul className="nav nav-sidebar">
-                            <li className="active"><a href="#">Friends<span className="sr-only">(current)</span></a></li>
-                            {this.state.friends.map(friendName => <li><a href="#" onClick={this.openChat} > { friendName }</a></li>)}
-                    </ul>
-                    <ul className="nav nav-sidebar">
-                        <li><a href="">Nav item again</a></li>
-                        <li><a href="">One more nav</a></li>
-                        <li><a href="">Another nav item</a></li>
+                            {this.state.friends.map(friendName => <li><a href="#" className="btn btn-default" onClick={this.openChat} style={{ textAlign: 'right',  }}> { friendName }</a></li>)}
                     </ul>
                 </div>
                 <ChatsView chatsLoaded={this.state.chatsLoaded}/>
