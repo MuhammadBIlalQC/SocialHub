@@ -58,8 +58,9 @@
         this.loadMessages = this.loadMessages.bind(this);
         this.inputKeyEnter = this.inputKeyEnter.bind(this);
         this.scrollToBottomOfChat = this.scrollToBottomOfChat.bind(this);
-
-        this.loadMessages();
+        this.onRecievePropsMessage = this.onRecievePropsMessage.bind(this);
+        this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
+        //this.loadMessages();
     }
 
 
@@ -136,7 +137,36 @@
             //scroll to bottom of chat
             this.scrollToBottomOfChat();
         }
+    }
+    componentWillReceiveProps(nextProps)
+    {
+        if (this.props.messages != null)
+            this.onRecievePropsMessage();
+    }
+    onRecievePropsMessage()
+    {
+        const messages = this.state.messages != null ? this.state.messages : [];
+        const dates = [];
+        var scrollBottom = false;
+        const data = this.props.messages;
+        this.props.messages.forEach(message => {
+            const pushMessagetoChat = this.state.lastFetched == null ? true : message.date > this.state.lastFetched; //is it newer than the last message in the chatbox?
 
+            if (pushMessagetoChat)
+            {
+                var user = message.srcUser;
+                user = user == this.props.user ? user : 'you';
+                messages.push(<p>{user}: {message.text}</p>);
+                dates.push(message.date);
+                scrollBottom = true;
+            }
+        });
+        this.setState({ messages: messages, lastFetched: data[data.length - 1].date });
+
+        if (scrollBottom && this.state.showBody) {
+            this.scrollToBottomOfChat();
+            this.setState({})
+        }
     }
 
     scrollToBottomOfChat()
@@ -144,6 +174,7 @@
         const textArea = $('#' + "textOutputChat-" + this.props.user);
         textArea.scrollTop(textArea.offset().top);
     }
+
     render()
     {
         return (
@@ -167,17 +198,74 @@ class ChatsView extends React.Component {
     constructor(props)
     {
         super(props);
-        this.chats = this.props.chatsLoaded;
-        this.chatHeads = [];
+        this.state = { chatHeads: [], chatHeadMessages: {} };
+        this.getChatHeads = this.getChatHeads.bind(this);
+        this.recieveMessages = this.recieveMessages.bind(this);
+        this.pageLoadedTime = new Date();
+        this.recieveMessages();
+        this.formatServerDate = this.formatServerDate.bind(this);
     }
+
+    getChatHeads()
+    {
+        var chatHeads = this.props.chatsLoaded.map((elem, i) => {
+            return <ChatHead user={elem} nthChild={i + 1} elemID={'chat' + i} key={'chat' + i} messages={this.state.chatHeadMessages[elem]} />
+        });
+        return chatHeads;
+    }
+
+    formatServerDate(date) //the date the server sends cannot be compared with built-in new Date()
+    {
+        const year = date.substring(0, 4);
+        const month = date.substring(5, 7);
+        const day = date.substring(8, 10);
+        const hour = date.substring(11, 13);
+        const minute = date.substring(14, 16);
+        const second = date.substring(17, 19);
+
+        var formatedDate = new Date();
+        formatedDate.setYear(year);
+        formatedDate.setMonth(month - 1);
+        formatedDate.setDate(day - 1);
+        formatedDate.setHours(hour - 1);
+        formatedDate.setMinutes(minute - 1);
+        formatedDate.setSeconds(second - 1);
+
+        return formatedDate;
+    }
+
+    recieveMessages()
+    {
+        var chatHeadMessages = this.state.chatHeadMessages;
+        const self = this;
+
+        this.props.friends.forEach(friend => {
+            const loadedChats = this.props.chatsLoaded;
+
+            $.post('/api/friend/getmesssages', { friend: friend }, function (data) {
+                chatHeadMessages[friend] = data;
+                if (loadedChats.find(elem => friend == elem) == undefined)
+                {
+                    if (data.length > 0)
+                    {
+                        if (time > self.pageLoadedTime)
+                        {
+                            self.props.openChat(friend);
+                        }
+                    }
+                }
+            });
+        });
+
+        this.setState({ chatHeadMessages: chatHeadMessages });
+
+        setTimeout(this.recieveMessages, 500);
+    }
+
 
     render()
     {
-
-        for (var i = 0; i < this.chats.length; i++) {
-            this.chatHeads.push(<ChatHead user={this.chats[i]} nthChild={i + 1} elemID={'chat' + i} key={'chat' + i} />);
-        }
-        return <div>{this.chatHeads}</div>
+        return <div>{this.getChatHeads()}</div>
     }
 }
 
@@ -190,6 +278,7 @@ class FriendPanel extends React.Component
         const self = this;
 
         this.openChat = this.openChat.bind(this);
+        this.openChatFromChatsView = this.openChatFromChatsView.bind(this);
 
         $.get('/api/user/getusername', function (data) {
             self.setState({ user: data.user });
@@ -217,6 +306,15 @@ class FriendPanel extends React.Component
         }
     }
 
+    openChatFromChatsView(friend)
+    {
+        const chatsLoaded = this.state.chatsLoaded;
+        if (!chatsLoaded.find(username => username == friend))
+        {
+            chatsLoaded.push(friend);
+            this.setState({ chatsLoaded: chatsLoaded });
+        }
+    }
     render()
     {
         return (
@@ -230,7 +328,7 @@ class FriendPanel extends React.Component
                             {this.state.friends.map(friendName => <li><a href="#" className="btn btn-default" onClick={this.openChat} style={{ textAlign: 'right',  }}> { friendName }</a></li>)}
                     </ul>
                 </div>
-                <ChatsView chatsLoaded={this.state.chatsLoaded}/>
+                <ChatsView chatsLoaded={this.state.chatsLoaded} friends={this.state.friends} openChat={this.openChatFromChatsView} />
             </div>
         </div>)
     }
