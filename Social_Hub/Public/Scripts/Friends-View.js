@@ -28,6 +28,7 @@ class FriendRequest extends React.Component
     {
         super(props);
         this.state = { user: this.props.user, acceptionView: [] };
+
         this.style = {
             'border': 'black 1px solid',
             'margin': '20px',
@@ -35,7 +36,7 @@ class FriendRequest extends React.Component
             'position': 'relative',
             'height': '120px',
             'overflow': 'none',
-            'width': '400px',
+            'width': window.innerWidth > 400 ? '400px' : (window.innerWidth - 30) + 'px',
         }
         this.acceptFriendRequest = this.acceptFriendRequest.bind(this);
         this.removeFriendRequest = this.removeFriendRequest.bind(this);
@@ -82,7 +83,7 @@ class FriendsAddables extends React.Component {
             'position': 'relative',
             'height': '120px',
             'overflow': 'none',
-            'width': '400px',
+            'width': window.innerWidth > 400 ? '400px' : (window.innerWidth - 30) + 'px',
         }
         this.addFriend = this.addFriend.bind(this);
 
@@ -153,10 +154,10 @@ class FriendsView extends React.Component
                     {this.state.friends}
                 </div>
                 <div className="row">
-                    {this.state.friendRequests.length == 0 ? null : <div> <h1>Friend Requests</h1> {this.state.friendRequests} </div>}
+                    {this.state.friendRequests.length == 0 ? null : <div> <h1 style={{ paddingLeft: '10px' }}>Friend Requests</h1> {this.state.friendRequests} </div>}
                 </div>
                 <div className="row">
-                    {this.state.friendables.length == 0 ? null : <div> <h1>Add New Friends</h1> {this.state.friendables} </div>}
+                    {this.state.friendables.length == 0 ? null : <div> <h1 style={ {paddingLeft: '10px'}}>Add New Friends</h1> {this.state.friendables} </div>}
                 </div>
             </div>
         )

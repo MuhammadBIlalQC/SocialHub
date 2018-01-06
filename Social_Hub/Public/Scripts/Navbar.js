@@ -7,10 +7,10 @@ class Nav extends React.Component {
                 <div className="container-fluid">
                     <div className="navbar-header">
                         <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
+                            <span className="sr-only">Toggle navigation</span>
+                            <span className="icon-bar"></span>
+                            <span className="icon-bar"></span>
+                            <span className="icon-bar"></span>
                         </button>
                         <a className="navbar-brand" href="#" style={{ 'color': 'white' }}>Social Hub</a>
                     </div>

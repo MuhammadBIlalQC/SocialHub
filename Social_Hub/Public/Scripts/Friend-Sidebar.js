@@ -55,7 +55,7 @@
 
         this.toggleChat = this.toggleChat.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
-        this.loadMessages = this.loadMessages.bind(this);
+        //this.loadMessages = this.loadMessages.bind(this);
         this.inputKeyEnter = this.inputKeyEnter.bind(this);
         this.scrollToBottomOfChat = this.scrollToBottomOfChat.bind(this);
         this.onRecievePropsMessage = this.onRecievePropsMessage.bind(this);
@@ -83,7 +83,7 @@
         this.setState(updatedState);
         
     }
-
+    /*
     loadMessages()
     {
         const self = this;
@@ -116,7 +116,7 @@
         });
         setTimeout(this.loadMessages, 500);
     }
-
+    */
     inputKeyEnter(e)
     {
         if (e.keyCode == 13)
@@ -214,24 +214,9 @@ class ChatsView extends React.Component {
         return chatHeads;
     }
 
-    formatServerDate(date) //the date the server sends cannot be compared with built-in new Date()
+    formatServerDate(serverDate) //the date the server sends cannot be compared with built-in new Date()
     {
-        const year = date.substring(0, 4);
-        const month = date.substring(5, 7);
-        const day = date.substring(8, 10);
-        const hour = date.substring(11, 13);
-        const minute = date.substring(14, 16);
-        const second = date.substring(17, 19);
-
-        var formatedDate = new Date();
-        formatedDate.setYear(year);
-        formatedDate.setMonth(month - 1);
-        formatedDate.setDate(day - 1);
-        formatedDate.setHours(hour - 1);
-        formatedDate.setMinutes(minute - 1);
-        formatedDate.setSeconds(second - 1);
-
-        return formatedDate;
+        return new Date(serverDate);
     }
 
     recieveMessages()
@@ -248,6 +233,9 @@ class ChatsView extends React.Component {
                 {
                     if (data.length > 0)
                     {
+                        var serverTime = data.pop().date;
+                        var time = self.formatServerDate(serverTime);
+
                         if (time > self.pageLoadedTime)
                         {
                             self.props.openChat(friend);
@@ -319,7 +307,7 @@ class FriendPanel extends React.Component
     {
         return (
         <div>
-            <div className="container" id="friendSidebar" >
+            <div className="container hidden-xs hidden-sm" id="friendSidebar" >
                 <div className="col-sm-3 col-md-2 sidebar">
                     <ul className="nav nav-sidebar">
                             <li className="active"><a href="#">Welcome {this.state.user}! <span className="sr-only">(current)</span></a></li>
